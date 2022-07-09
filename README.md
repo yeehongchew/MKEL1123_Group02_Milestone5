@@ -51,7 +51,7 @@ To change the pinout configurations, before allowing the IDE to generate C/C++ c
 ![image](https://user-images.githubusercontent.com/64217618/178117171-0041471c-6940-44c3-824f-bd0d0b0482df.png)  
 
 
-After saving the Pinout View, [main.h]() where the external components are defined, should be updated based on your own configuration. Line _ to Line _ on [main.c]() is hard-coded accordingly depending on your pull-up/pull-down configuration as well. 
+After saving the Pinout View, [main.h]() where the external components are defined, should be updated based on your own configuration. Line 101 to Line 125 on [main.c]() is hard-coded accordingly depending on your pull-up/pull-down configuration as well. 
 
 ## Quick Links 
 * [YouTube Demo Video Submitted](https://youtu.be/jqhI_9lisJs)
