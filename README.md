@@ -30,26 +30,27 @@ The fresh and stale fruits / vegetables are obtained from [Kaggle](https://www.k
 
 ![image](https://user-images.githubusercontent.com/64217618/178151313-aeea6674-8443-4e7a-a6f7-20cd69916569.png)
 
-### Model Testing and Classification  
+### Transfer Learning Model Configuration
 Since we are only using minimum amount of dataset, transfer learning is highly recommended to compute a model with higher accuracy. Nonetheless, this might induce a higher FLASH/RAM memory due to larger amount of trainsets needed to achieve a certain accuracy. Alternatively, you may select *Classification* under *Learning Block*.  
 ![image](https://user-images.githubusercontent.com/64217618/178151565-3d905129-14ad-4284-a72b-9c85eefcd843.png)   
 
-When you click on the *Generate Features* tab, if the dataset is well clustered, it will be easier for the machine learning model to train trainsets with similar features. 
+When you click on the *Generate Features* tab, if the dataset is well clustered, it will be easier for the machine learning model to train trainsets with similar features.  
+
 ![image](https://user-images.githubusercontent.com/64217618/178151691-24d8f417-9cf2-426a-be05-51d09872a440.png)    
 
-For a good default value in configuring the transfer learning model, diagram below can be referred. Another tip to optimize the memory usage is to *Choose a different model* under Neural Network Architecture --> MobileNetV1 96x96 0.2 for a smaller transfer learning model. 
-![image](https://user-images.githubusercontent.com/64217618/178151891-7083687b-03c1-4c61-9c6b-71089c60b1d0.png)
+For a good default value in configuring the transfer learning model, refer the diagram below. If the accuracy does not achieved as expected, increase the number of training cycles (This will not increase memory usage). Another tip to optimize the memory usage is to setup for a smaller transfer learning model. This can be done in  Neural Network Architecture --> *Choose a different model*  --> MobileNetV1 96x96 0.2 .  
 
+![image](https://user-images.githubusercontent.com/64217618/178152155-773c1a54-3da9-410c-bc89-b28739d28221.png)  
 
-
-
-###
+### Model Testing and Validation 
 
 
 ### Deployment Of CMSIS Pack From Edge Impulse To STM32CubeIDE
 Before exporting the CMSIS-pack to CubeIDE,  the FLASH and RAM usage is required to maintain within the capability of the Nucleo Board to prevent 'FLASH' overflowed issue and unable to load the code into the board.  
 
 ![image](https://user-images.githubusercontent.com/64217618/178114672-4fd0b92f-d0ef-452e-aa6e-b02eb244e91d.png)  
+
+
 
 
 ## LED With Switch Button Pre-Work
