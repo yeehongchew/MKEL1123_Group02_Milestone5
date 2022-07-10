@@ -23,7 +23,7 @@
 
 ## Image Classification Using Edge Impulse 
 A complete tutorial on how to classify images in Edge Impulse is well-documented by the vendor in https://docs.edgeimpulse.com/docs/tutorials/image-classification  
-Hence, a few features are highlighted to take note of while implementing image classification on Edge Impulse.  
+Hence, a few features are highlighted to take note of while implementing image classification on Edge Impulse. This training model on Edge Impulse can be found [here](https://studio.edgeimpulse.com/public/113810/latest) if you are interested in mirroring this project. 
 
 ### Data Acquisition  
 The fresh and stale fruits / vegetables are obtained from [Kaggle](https://www.kaggle.com/datasets/raghavrpotdar/fresh-and-stale-images-of-fruits-and-vegetables) and uploaded to Edge Impulse. Be mindful on the size of the images uploaded that is able to fit to the RAM of your board. Alternatively, you may use an external SD card to sustain a more accurate dataset.   
@@ -31,26 +31,37 @@ The fresh and stale fruits / vegetables are obtained from [Kaggle](https://www.k
 ![image](https://user-images.githubusercontent.com/64217618/178151313-aeea6674-8443-4e7a-a6f7-20cd69916569.png)
 
 ### Transfer Learning Model Configuration
-Since we are only using minimum amount of dataset, transfer learning is highly recommended to compute a model with higher accuracy. Nonetheless, this might induce a higher FLASH/RAM memory due to larger amount of trainsets needed to achieve a certain accuracy. Alternatively, you may select *Classification* under *Learning Block*.  
+1. Since we are only using minimum amount of dataset, transfer learning is highly recommended to compute a model with higher accuracy. Nonetheless, this might induce a higher FLASH/RAM memory due to larger amount of trainsets needed to achieve a certain accuracy. Alternatively, you may select *Classification* under *Learning Block*.  
 ![image](https://user-images.githubusercontent.com/64217618/178151565-3d905129-14ad-4284-a72b-9c85eefcd843.png)   
 
-When you click on the *Generate Features* tab, if the dataset is well clustered, it will be easier for the machine learning model to train trainsets with similar features.  
+2. When you click on the *Generate Features* tab, if the dataset is well clustered, it will be easier for the machine learning model to train trainsets with similar features.  
 
 ![image](https://user-images.githubusercontent.com/64217618/178151691-24d8f417-9cf2-426a-be05-51d09872a440.png)    
 
-For a good default value in configuring the transfer learning model, refer the diagram below. If the accuracy does not achieved as expected, increase the number of training cycles (This will not increase memory usage). Another tip to optimize the memory usage is to setup for a smaller transfer learning model. This can be done in  Neural Network Architecture --> *Choose a different model*  --> MobileNetV1 96x96 0.2 .  
+3. For a good default value in configuring the transfer learning model, refer the diagram below. If the accuracy does not achieved as expected, increase the number of training cycles (This will not increase memory usage). Another tip to optimize the memory usage is to setup for a smaller transfer learning model. This can be done in  Neural Network Architecture --> *Choose a different model*  --> MobileNetV1 96x96 0.2 .  
 
 ![image](https://user-images.githubusercontent.com/64217618/178152155-773c1a54-3da9-410c-bc89-b28739d28221.png)  
 
-### Model Testing and Validation 
+4. Despite having an average accuracy, the training model still manage to determine whether the fruits are fresh or spoiled without classifying the type of fruit/vegetables. Hence, we can say that this model achieved the accuracy we wanted.  
+
+![image](https://user-images.githubusercontent.com/64217618/178152307-31402dc7-88d9-4d66-97d2-c02c3ddf6cdd.png)
 
 
 ### Deployment Of CMSIS Pack From Edge Impulse To STM32CubeIDE
-Before exporting the CMSIS-pack to CubeIDE,  the FLASH and RAM usage is required to maintain within the capability of the Nucleo Board to prevent 'FLASH' overflowed issue and unable to load the code into the board.  
+1. Before exporting the CMSIS-pack library to CubeIDE,  the FLASH and RAM usage is required to maintain within the capability of the Nucleo Board to prevent 'FLASH' overflowed issue and unable to load the code into the board.  
 
-![image](https://user-images.githubusercontent.com/64217618/178114672-4fd0b92f-d0ef-452e-aa6e-b02eb244e91d.png)  
+![image](https://user-images.githubusercontent.com/64217618/178152395-5ec39edd-4e9a-4d4a-bf62-2e7d5c3440cc.png)  
 
+2. The deployment of Cube.MX CMSIS-PACK as library to CubeIDE is documented in https://docs.edgeimpulse.com/docs/deployment/using-cubeai   
 
+3. After generating the C++ code, you can either copy from the [main.cpp]() if you are reflecting this project from this exact [Edge Impulse project](https://studio.edgeimpulse.com/public/113810/latest) or do as follows referring the [main.cpp]():  
+
+      i.   Line 24-25: Copy to use the exact header file  
+      ii.  Line 27 - 67: Replace your raw features (From Edge Impulse --> Live Classification --> Classification result --> Copy Raw feature 
+![image](https://user-images.githubusercontent.com/64217618/178153237-42cccdc2-8b32-4efb-981a-45b564df44fd.png)  
+
+      iii. Line 104 - 102: Copy to configure PuTTy 
+      iv.  Line 164 - 317: Edit to display output of the image classification. Compulsory items to be included can be found in [documentation](https://docs.edgeimpulse.com/docs/deployment/using-cubeai) 
 
 
 ## LED With Switch Button Pre-Work
@@ -74,7 +85,7 @@ To change the pinout configurations, before allowing the IDE to generate C/C++ c
 After saving the Pinout View, [main.h](https://github.com/yeehongchew/MKEL1123_Group02_Milestone5/blob/main/LED/Core/Inc/main.h) where the external components are defined (Line 60 to Line 77), should be updated based on your own configuration automatically. Line 101 to Line 125 on [main.c](https://github.com/yeehongchew/MKEL1123_Group02_Milestone5/blob/main/LED/Core/Src/main.c) is hard-coded accordingly depending on your pull-up/pull-down configuration as well. 
 
 ## Quick Links 
-* [YouTube Demo Video Submitted](https://youtu.be/jqhI_9lisJs)
+* [YouTube Demo Video Submitted](https://www.youtube.com/watch?v=vl0Wi2fZ1hA)
 
 
 ## Reference ##  
