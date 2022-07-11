@@ -47,6 +47,7 @@ The fresh and stale fruits / vegetables are obtained from [Kaggle](https://www.k
 ![image](https://user-images.githubusercontent.com/64217618/178152307-31402dc7-88d9-4d66-97d2-c02c3ddf6cdd.png)
 
 
+
 ### Deployment Of CMSIS Pack From Edge Impulse To STM32CubeIDE
 1. Before exporting the CMSIS-pack library to CubeIDE,  the FLASH and RAM usage is required to maintain within the capability of the Nucleo Board to prevent 'FLASH' overflowed issue and unable to load the code into the board.  
 
@@ -60,7 +61,7 @@ The fresh and stale fruits / vegetables are obtained from [Kaggle](https://www.k
       ii.  Line 27 - 67: Replace your raw features (From Edge Impulse --> Live Classification --> Classification result --> Copy Raw feature 
 ![image](https://user-images.githubusercontent.com/64217618/178153237-42cccdc2-8b32-4efb-981a-45b564df44fd.png)  
 
-      iii. Line 104 - 113: Copy to configure PuTTy  
+      iii. Line 104 - 113: Copy to configure Tera Term  
       iv.  Line 164 - 317: Edit to display output of the image classification. Compulsory items to be included can be found in [documentation](https://docs.edgeimpulse.com/docs/deployment/using-cubeai) 
 
 ### Output From TeraTerm  
