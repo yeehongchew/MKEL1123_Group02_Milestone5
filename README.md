@@ -82,10 +82,35 @@ To change the pinout configurations, before allowing the IDE to generate C/C++ c
 ![image](https://user-images.githubusercontent.com/64217618/178117171-0041471c-6940-44c3-824f-bd0d0b0482df.png)  
 
 
-After saving the Pinout View, [main.h](https://github.com/yeehongchew/MKEL1123_Group02_Milestone5/blob/main/LED/Core/Inc/main.h) where the external components are defined (Line 60 to Line 77), should be updated based on your own configuration automatically. Line 101 to Line 125 on [main.c](https://github.com/yeehongchew/MKEL1123_Group02_Milestone5/blob/main/LED/Core/Src/main.c) is hard-coded accordingly depending on your pull-up/pull-down configuration as well. 
+After saving the Pinout View, [main.h](https://github.com/yeehongchew/MKEL1123_Group02_Milestone5/blob/main/LED/Core/Inc/main.h) where the external components are defined (Line 60 to Line 77), should be updated based on your own configuration automatically. Line 101 to Line 125 on [main.c](https://github.com/yeehongchew/MKEL1123_Group02_Milestone5/blob/main/LED/Core/Src/main.c) is hard-coded accordingly depending on your pull-up/pull-down configuration as well.  
+
+## Camera Configuration Pre-Work  
+
+The [camera](https://github.com/yeehongchew/MKEL1123_Group02_Milestone5/tree/main/Camera) documented in this project explains the challendges faced with configuring the OV7670 camera which was intended to be used to take live images of fresh or stale fruits and vegetables. Due to constraints of the board itself whereby it doesn't have DCMI functionality, the DMA capability of the F411 board is explored in an attempt to read the inputs from the camera.  
+
+The DMA is supposed to work in such a way that it reads in the data and interrupts the process when the data has been completely transferred. However, due to the huge size of image files, it's possible that it takes a longer time to transfer the data, plus due to time constraints for troubleshooting the code, the camera ultimately could not be implemented as part of this project and can instead be left for future works.  
+
+| Hardware  | Pinout    |  
+| ----------| --------  |
+| D0        |  PC6      |
+| D1        |  PC7      |
+| D2        |  PC8      |
+| D3        |  PC9      |  
+| D4        |  PC11     |  
+| D5        |  PB6      |  
+| D6        |  PB8      |  
+| D7        |  PB9      |  
+| SDA       |  PC12     |  
+| SCL       |  PB10     |  
+| VS        |  PB7      |  
+| HS        |  PA4      |  
+| PCLK      |  PA6      |  
+| XCLK      |  PA8      |  
+
+
 
 ## Quick Links 
-* [YouTube Demo Video Submitted](https://www.youtube.com/watch?v=vl0Wi2fZ1hA)
+* [YouTube Demo Video Submitted]()
 
 
 ## Reference ##  
