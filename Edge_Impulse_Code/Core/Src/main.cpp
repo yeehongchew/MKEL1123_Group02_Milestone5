@@ -1,28 +1,12 @@
-/* USER CODE BEGIN Header */
-/**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2022 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
-/* USER CODE END Header */
-/* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
 #include "edge-impulse-sdk/classifier/ei_run_classifier.h"
 using namespace ei;
+CRC_HandleTypeDef hcrc;
+UART_HandleTypeDef huart2;
+void SystemClock_Config(void);
+static void MX_GPIO_Init(void);
+static void MX_USART2_UART_Init(void);
+static void MX_CRC_Init(void);
 
 //Fresh Orange
 static float features0[] = {
@@ -66,41 +50,11 @@ int get_feature_data3(size_t offset, size_t length, float *out_ptr) {
     return 0;
 }
 
-/* USER CODE END Includes */
-/* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
+/*int get_feature_data0(size_t offset, size_t length, float *out_ptr) {
+    memcpy(out_ptr, features0 + offset, length * sizeof(float));
+    return 0;
+}*/
 
-/* USER CODE END PTD */
-
-/* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
-/* USER CODE END PD */
-
-/* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
-
-/* Private variables ---------------------------------------------------------*/
- CRC_HandleTypeDef hcrc;
-
-UART_HandleTypeDef huart2;
-
-/* USER CODE BEGIN PV */
-
-/* USER CODE END PV */
-
-/* Private function prototypes -----------------------------------------------*/
-void SystemClock_Config(void);
-static void MX_GPIO_Init(void);
-static void MX_USART2_UART_Init(void);
-static void MX_CRC_Init(void);
-/* USER CODE BEGIN PFP */
-
-/* USER CODE END PFP */
-
-/* Private user code ---------------------------------------------------------*/
-/* USER CODE BEGIN 0 */
 #include <stdarg.h>
 
 void vprint(const char *fmt, va_list argp)
@@ -119,205 +73,227 @@ void ei_printf(const char *format, ...) {
     va_end(myargs);
 }
 
-/* USER CODE END 0 */
-
-/**
-  * @brief  The application entry point.
-  * @retval int
-  */
 int main(void)
 {
-  /* USER CODE BEGIN 1 */
+	  HAL_Init();
 
-  /* USER CODE END 1 */
+	  /* Configure the system clock */
+	  SystemClock_Config();
 
-  /* MCU Configuration--------------------------------------------------------*/
+	  /* Initialize all configured peripherals */
+	  MX_GPIO_Init();
+	  MX_USART2_UART_Init();
+	  MX_CRC_Init();
 
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+	while (1)
+	{
+	    /* USER CODE END WHILE */
+		  //Fresh Oranges
+		  signal_t signal0;
+		  signal0.total_length = sizeof(features0) / sizeof(features0[0]);
+		  signal0.get_data = &get_feature_data0;
+		  ei_impulse_result_t result0 = { 0 };
+				EI_IMPULSE_ERROR res0 = run_classifier(&signal0, &result0, false);
+				ei_printf("run_classifier returned: %d\n", res0);
+				ei_printf("Predictions (Classification: %d ms.):",
+					result0.timing.classification);
 
-  /* USER CODE BEGIN Init */
-
-  /* USER CODE END Init */
-
-  /* Configure the system clock */
-  SystemClock_Config();
-
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
-
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_USART2_UART_Init();
-  MX_CRC_Init();
-  /* USER CODE BEGIN 2 */
-
-  /* USER CODE END 2 */
-
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-    /* USER CODE END WHILE */
-	  //Fresh Oranges
-	  signal_t signal0;
-	  signal0.total_length = sizeof(features0) / sizeof(features0[0]);
-	  signal0.get_data = &get_feature_data0;
-	  ei_impulse_result_t result0 = { 0 };
-			EI_IMPULSE_ERROR res0 = run_classifier(&signal0, &result0, false);
-			ei_printf("run_classifier returned: %d\n", res0);
-			ei_printf("Predictions (Classification: %d ms.):",
-				result0.timing.classification);
-
-			// print the predictions
-			ei_printf("[");
-			for (size_t ix = 0; ix < EI_CLASSIFIER_LABEL_COUNT; ix++) {
-				ei_printf_float(result0.classification[ix].value);
-		#if EI_CLASSIFIER_HAS_ANOMALY == 1
-				ei_printf(", ");
-		#else
-				if (ix != EI_CLASSIFIER_LABEL_COUNT - 1) {
+				// print the predictions
+				ei_printf("[");
+				for (size_t ix = 0; ix < EI_CLASSIFIER_LABEL_COUNT; ix++) {
+					ei_printf_float(result0.classification[ix].value);
+			#if EI_CLASSIFIER_HAS_ANOMALY == 1
 					ei_printf(", ");
+			#else
+					if (ix != EI_CLASSIFIER_LABEL_COUNT - 1) {
+						ei_printf(", ");
+					}
+			#endif
 				}
-		#endif
-			}
-		#if EI_CLASSIFIER_HAS_ANOMALY == 1
-			ei_printf_float(result0.anomaly);
-		#endif
-			ei_printf("]\n");
+			#if EI_CLASSIFIER_HAS_ANOMALY == 1
+				ei_printf_float(result0.anomaly);
+			#endif
+				ei_printf("]\n");
 
-		if(result0.classification[0].value > result0.classification[1].value && result0.classification[0].value > result0.classification[2].value && result0.classification[0].value > result0.classification[3].value && result0.classification[0].value > result0.classification[4].value)
-			ei_printf("This is FRESH APPLE!\n");
-		else if(result0.classification[1].value > result0.classification[0].value && result0.classification[1].value > result0.classification[2].value && result0.classification[1].value > result0.classification[3].value && result0.classification[1].value > result0.classification[4].value)
-			ei_printf("This is STALE ORANGE!\n");
-		else if(result0.classification[2].value > result0.classification[0].value && result0.classification[2].value > result0.classification[1].value && result0.classification[2].value > result0.classification[3].value && result0.classification[2].value > result0.classification[4].value)
-			ei_printf("This is FRESH APPLE!\n");
-		else if(result0.classification[3].value > result0.classification[0].value && result0.classification[3].value > result0.classification[1].value && result0.classification[3].value > result0.classification[2].value && result0.classification[3].value > result0.classification[4].value)
-			ei_printf("This is STALE ORANGE!\n");
-		else
-			ei_printf("Unknown Item!\n");
-		HAL_Delay(5000);
+			if(result0.classification[0].value > result0.classification[1].value && result0.classification[0].value > result0.classification[2].value && result0.classification[0].value > result0.classification[3].value && result0.classification[0].value > result0.classification[4].value)
+				ei_printf("This is FRESH APPLE!\n");
+			else if(result0.classification[1].value > result0.classification[0].value && result0.classification[1].value > result0.classification[2].value && result0.classification[1].value > result0.classification[3].value && result0.classification[1].value > result0.classification[4].value)
+				ei_printf("This is STALE ORANGE!\n");
+			else if(result0.classification[2].value > result0.classification[0].value && result0.classification[2].value > result0.classification[1].value && result0.classification[2].value > result0.classification[3].value && result0.classification[2].value > result0.classification[4].value)
+				ei_printf("This is FRESH APPLE!\n");
+			else if(result0.classification[3].value > result0.classification[0].value && result0.classification[3].value > result0.classification[1].value && result0.classification[3].value > result0.classification[2].value && result0.classification[3].value > result0.classification[4].value)
+				ei_printf("This is STALE ORANGE!\n");
+			else
+				ei_printf("Unknown Item!\n");
+			HAL_Delay(5000);
 
-		//Stale Oranges
-		signal_t signal1;
-	    signal1.total_length = sizeof(features1) / sizeof(features1[0]);
-	    signal1.get_data = &get_feature_data1;
-		ei_impulse_result_t result1 = { 0 };
-			EI_IMPULSE_ERROR res1 = run_classifier(&signal1, &result1, false);
-			ei_printf("run_classifier returned: %d\n", res1);
-			ei_printf("Predictions (Classification: %d ms.):",
-				result1.timing.classification);
+			if(result0.classification[0].value > result0.classification[1].value && result0.classification[0].value > result0.classification[2].value && result0.classification[0].value > result0.classification[3].value && result0.classification[0].value > result0.classification[4].value)
+				HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+			else if(result0.classification[1].value > result0.classification[0].value && result0.classification[1].value > result0.classification[2].value && result0.classification[1].value > result0.classification[3].value && result0.classification[1].value > result0.classification[4].value)
+			    HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+			else if(result0.classification[2].value > result0.classification[0].value && result0.classification[2].value > result0.classification[1].value && result0.classification[2].value > result0.classification[3].value && result0.classification[2].value > result0.classification[4].value)
+				HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+			else if(result0.classification[3].value > result0.classification[0].value && result0.classification[3].value > result0.classification[1].value && result0.classification[3].value > result0.classification[2].value && result0.classification[3].value > result0.classification[4].value)
+				HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+			else
+				ei_printf("Unknown Item!\n");
+			HAL_Delay(5000);
 
-			// print the predictions
-			ei_printf("[");
-			for (size_t ix = 1; ix < EI_CLASSIFIER_LABEL_COUNT; ix++) {
-				ei_printf_float(result1.classification[ix].value);
-		#if EI_CLASSIFIER_HAS_ANOMALY == 1
-				ei_printf(", ");
-		#else
-				if (ix != EI_CLASSIFIER_LABEL_COUNT - 1) {
+
+			//Stale Oranges
+			signal_t signal1;
+		    signal1.total_length = sizeof(features1) / sizeof(features1[0]);
+		    signal1.get_data = &get_feature_data1;
+			ei_impulse_result_t result1 = { 0 };
+				EI_IMPULSE_ERROR res1 = run_classifier(&signal1, &result1, false);
+				ei_printf("run_classifier returned: %d\n", res1);
+				ei_printf("Predictions (Classification: %d ms.):",
+					result1.timing.classification);
+
+				// print the predictions
+				ei_printf("[");
+				for (size_t ix = 1; ix < EI_CLASSIFIER_LABEL_COUNT; ix++) {
+					ei_printf_float(result1.classification[ix].value);
+			#if EI_CLASSIFIER_HAS_ANOMALY == 1
 					ei_printf(", ");
+			#else
+					if (ix != EI_CLASSIFIER_LABEL_COUNT - 1) {
+						ei_printf(", ");
+					}
+			#endif
 				}
-		#endif
-			}
-		#if EI_CLASSIFIER_HAS_ANOMALY == 1
-			ei_printf_float(result1.anomaly);
-		#endif
-			ei_printf("]\n");
+			#if EI_CLASSIFIER_HAS_ANOMALY == 1
+				ei_printf_float(result1.anomaly);
+			#endif
+				ei_printf("]\n");
 
-		if(result1.classification[0].value > result1.classification[1].value && result1.classification[0].value > result1.classification[2].value && result1.classification[0].value > result1.classification[3].value && result1.classification[0].value > result1.classification[4].value)
-			ei_printf("This is FRESH ORANGE!\n");
-		else if(result1.classification[1].value > result1.classification[0].value && result1.classification[1].value > result1.classification[2].value && result1.classification[1].value > result1.classification[3].value && result1.classification[1].value > result1.classification[4].value)
-			ei_printf("This is STALE ORANGE!\n");
-		else if(result1.classification[2].value > result1.classification[0].value && result1.classification[2].value > result1.classification[1].value && result1.classification[2].value > result1.classification[3].value && result1.classification[2].value > result1.classification[4].value)
-			ei_printf("This is FRESH APPLE!\n");
-		else if(result1.classification[3].value > result1.classification[0].value && result1.classification[3].value > result1.classification[1].value && result1.classification[3].value > result1.classification[2].value && result1.classification[3].value > result1.classification[4].value)
-			ei_printf("This is STALE APPLE!\n");
-		else
-			ei_printf("Unknown Item!\n");
-		HAL_Delay(5000);
+			if(result1.classification[0].value > result1.classification[1].value && result1.classification[0].value > result1.classification[2].value && result1.classification[0].value > result1.classification[3].value && result1.classification[0].value > result1.classification[4].value)
+				ei_printf("This is FRESH ORANGE!\n");
+			else if(result1.classification[1].value > result1.classification[0].value && result1.classification[1].value > result1.classification[2].value && result1.classification[1].value > result1.classification[3].value && result1.classification[1].value > result1.classification[4].value)
+				ei_printf("This is STALE ORANGE!\n");
+			else if(result1.classification[2].value > result1.classification[0].value && result1.classification[2].value > result1.classification[1].value && result1.classification[2].value > result1.classification[3].value && result1.classification[2].value > result1.classification[4].value)
+				ei_printf("This is FRESH APPLE!\n");
+			else if(result1.classification[3].value > result1.classification[0].value && result1.classification[3].value > result1.classification[1].value && result1.classification[3].value > result1.classification[2].value && result1.classification[3].value > result1.classification[4].value)
+				ei_printf("This is STALE APPLE!\n");
+			else
+				ei_printf("Unknown Item!\n");
+			HAL_Delay(5000);
 
-		//Fresh Apples
-		signal_t signal2;
-		signal2.total_length = sizeof(features2) / sizeof(features2[0]);
-		signal2.get_data = &get_feature_data2;
-		ei_impulse_result_t result2 = { 0 };
-			EI_IMPULSE_ERROR res2 = run_classifier(&signal2, &result2, false);
-			ei_printf("run_classifier returned: %d\n", res2);
-			ei_printf("Predictions (Classification: %d ms.):",
-				result2.timing.classification);
+			if(result1.classification[0].value > result1.classification[1].value && result1.classification[0].value > result1.classification[2].value && result1.classification[0].value > result1.classification[3].value && result1.classification[0].value > result1.classification[4].value)
+				HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+			else if(result1.classification[1].value > result1.classification[0].value && result1.classification[1].value > result1.classification[2].value && result1.classification[1].value > result1.classification[3].value && result1.classification[1].value > result1.classification[4].value)
+				HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+			else if(result1.classification[2].value > result1.classification[0].value && result1.classification[2].value > result1.classification[1].value && result1.classification[2].value > result1.classification[3].value && result1.classification[2].value > result1.classification[4].value)
+				HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+			else if(result1.classification[3].value > result1.classification[0].value && result1.classification[3].value > result1.classification[1].value && result1.classification[3].value > result1.classification[2].value && result1.classification[3].value > result1.classification[4].value)
+				HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+			else
+				ei_printf("Unknown Item!\n");
+			HAL_Delay(5000);
 
-			// print the predictions
-			ei_printf("[");
-			for (size_t ix = 1; ix < EI_CLASSIFIER_LABEL_COUNT; ix++) {
-				ei_printf_float(result2.classification[ix].value);
-		#if EI_CLASSIFIER_HAS_ANOMALY == 1
-				ei_printf(", ");
-		#else
-				if (ix != EI_CLASSIFIER_LABEL_COUNT - 1) {
+			//Fresh Apples
+			signal_t signal2;
+			signal2.total_length = sizeof(features2) / sizeof(features2[0]);
+			signal2.get_data = &get_feature_data2;
+			ei_impulse_result_t result2 = { 0 };
+				EI_IMPULSE_ERROR res2 = run_classifier(&signal2, &result2, false);
+				ei_printf("run_classifier returned: %d\n", res2);
+				ei_printf("Predictions (Classification: %d ms.):",
+					result2.timing.classification);
+
+				// print the predictions
+				ei_printf("[");
+				for (size_t ix = 1; ix < EI_CLASSIFIER_LABEL_COUNT; ix++) {
+					ei_printf_float(result2.classification[ix].value);
+			#if EI_CLASSIFIER_HAS_ANOMALY == 1
 					ei_printf(", ");
+			#else
+					if (ix != EI_CLASSIFIER_LABEL_COUNT - 1) {
+						ei_printf(", ");
+					}
+			#endif
 				}
-		#endif
-			}
-		#if EI_CLASSIFIER_HAS_ANOMALY == 1
-			ei_printf_float(result2.anomaly);
-		#endif
-			ei_printf("]\n");
+			#if EI_CLASSIFIER_HAS_ANOMALY == 1
+				ei_printf_float(result2.anomaly);
+			#endif
+				ei_printf("]\n");
 
-		if(result2.classification[0].value > result2.classification[1].value && result2.classification[0].value > result2.classification[2].value && result2.classification[0].value > result2.classification[3].value && result2.classification[0].value > result2.classification[4].value)
-			ei_printf("This is FRESH ORANGE!\n");
-		else if(result2.classification[1].value > result2.classification[0].value && result2.classification[1].value > result2.classification[2].value && result2.classification[1].value > result2.classification[3].value && result2.classification[1].value > result2.classification[4].value)
-			ei_printf("This is STALE ORANGE!\n");
-		else if(result2.classification[2].value > result2.classification[0].value && result2.classification[2].value > result2.classification[1].value && result2.classification[2].value > result2.classification[3].value && result2.classification[2].value > result2.classification[4].value)
-			ei_printf("This is FRESH APPLE!\n");
-		else if(result2.classification[3].value > result2.classification[0].value && result2.classification[3].value > result2.classification[1].value && result2.classification[3].value > result2.classification[2].value && result2.classification[3].value > result2.classification[4].value)
-			ei_printf("This is STALE APPLE!\n");
-		else
-			ei_printf("Unknown Item!\n");
-		HAL_Delay(5000);
+			if(result2.classification[0].value > result2.classification[1].value && result2.classification[0].value > result2.classification[2].value && result2.classification[0].value > result2.classification[3].value && result2.classification[0].value > result2.classification[4].value)
+				ei_printf("This is FRESH ORANGE!\n");
+			else if(result2.classification[1].value > result2.classification[0].value && result2.classification[1].value > result2.classification[2].value && result2.classification[1].value > result2.classification[3].value && result2.classification[1].value > result2.classification[4].value)
+				ei_printf("This is STALE ORANGE!\n");
+			else if(result2.classification[2].value > result2.classification[0].value && result2.classification[2].value > result2.classification[1].value && result2.classification[2].value > result2.classification[3].value && result2.classification[2].value > result2.classification[4].value)
+				ei_printf("This is FRESH APPLE!\n");
+			else if(result2.classification[3].value > result2.classification[0].value && result2.classification[3].value > result2.classification[1].value && result2.classification[3].value > result2.classification[2].value && result2.classification[3].value > result2.classification[4].value)
+				ei_printf("This is STALE APPLE!\n");
+			else
+				ei_printf("Unknown Item!\n");
+			HAL_Delay(5000);
 
-		//Stale Apples
-		signal_t signal3;
-	    signal3.total_length = sizeof(features3) / sizeof(features3[0]);
-	    signal3.get_data = &get_feature_data3;
-		ei_impulse_result_t result3 = { 0 };
-			EI_IMPULSE_ERROR res1 = run_classifier(&signal3, &result3, false);
-			ei_printf("run_classifier returned: %d\n", res1);
-			ei_printf("Predictions (Classification: %d ms.):",
-				result3.timing.classification);
+			if(result2.classification[0].value > result2.classification[1].value && result2.classification[0].value > result2.classification[2].value && result2.classification[0].value > result2.classification[3].value && result2.classification[0].value > result2.classification[4].value)
+				HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+			else if(result2.classification[1].value > result2.classification[0].value && result2.classification[1].value > result2.classification[2].value && result2.classification[1].value > result2.classification[3].value && result2.classification[1].value > result2.classification[4].value)
+				HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+			else if(result2.classification[2].value > result2.classification[0].value && result2.classification[2].value > result2.classification[1].value && result2.classification[2].value > result2.classification[3].value && result2.classification[2].value > result2.classification[4].value)
+				HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+			else if(result2.classification[3].value > result2.classification[0].value && result2.classification[3].value > result2.classification[1].value && result2.classification[3].value > result2.classification[2].value && result2.classification[3].value > result2.classification[4].value)
+				HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+			else
+				ei_printf("Unknown Item!\n");
+			HAL_Delay(5000);
 
-			// print the predictions
-			ei_printf("[");
-			for (size_t ix = 1; ix < EI_CLASSIFIER_LABEL_COUNT; ix++) {
-				ei_printf_float(result3.classification[ix].value);
-		#if EI_CLASSIFIER_HAS_ANOMALY == 1
-				ei_printf(", ");
-		#else
-				if (ix != EI_CLASSIFIER_LABEL_COUNT - 1) {
+			//Stale Apples
+			signal_t signal3;
+		    signal3.total_length = sizeof(features3) / sizeof(features3[0]);
+		    signal3.get_data = &get_feature_data3;
+			ei_impulse_result_t result3 = { 0 };
+				EI_IMPULSE_ERROR res3 = run_classifier(&signal3, &result3, false);
+				ei_printf("run_classifier returned: %d\n", res3);
+				ei_printf("Predictions (Classification: %d ms.):",
+					result3.timing.classification);
+
+				// print the predictions
+				ei_printf("[");
+				for (size_t ix = 1; ix < EI_CLASSIFIER_LABEL_COUNT; ix++) {
+					ei_printf_float(result3.classification[ix].value);
+			#if EI_CLASSIFIER_HAS_ANOMALY == 1
 					ei_printf(", ");
+			#else
+					if (ix != EI_CLASSIFIER_LABEL_COUNT - 1) {
+						ei_printf(", ");
+					}
+			#endif
 				}
-		#endif
-			}
-		#if EI_CLASSIFIER_HAS_ANOMALY == 1
-			ei_printf_float(result1.anomaly);
-		#endif
-			ei_printf("]\n");
+			#if EI_CLASSIFIER_HAS_ANOMALY == 1
+				ei_printf_float(result1.anomaly);
+			#endif
+				ei_printf("]\n");
 
-		if(result3.classification[0].value > result3.classification[1].value && result3.classification[0].value > result3.classification[2].value && result3.classification[0].value > result3.classification[3].value && result3.classification[0].value > result3.classification[4].value)
-			ei_printf("This is FRESH ORANGE!\n");
-		else if(result3.classification[1].value > result3.classification[0].value && result3.classification[1].value > result3.classification[2].value && result3.classification[1].value > result3.classification[3].value && result3.classification[1].value > result3.classification[4].value)
-			ei_printf("This is STALE ORANGE!\n");
-		else if(result3.classification[2].value > result3.classification[0].value && result3.classification[2].value > result3.classification[1].value && result3.classification[2].value > result3.classification[3].value && result3.classification[2].value > result3.classification[4].value)
-			ei_printf("This is FRESH APPLE!\n");
-		else if(result3.classification[3].value > result3.classification[0].value && result3.classification[3].value > result3.classification[1].value && result3.classification[3].value > result3.classification[2].value && result3.classification[3].value > result3.classification[4].value)
-			ei_printf("This is STALE APPLE!\n");
-		else
-			ei_printf("Unknown Item!\n");
-		HAL_Delay(5000);
-    /* USER CODE BEGIN 3 */
-  }
-  /* USER CODE END 3 */
+			if(result3.classification[0].value > result3.classification[1].value && result3.classification[0].value > result3.classification[2].value && result3.classification[0].value > result3.classification[3].value && result3.classification[0].value > result3.classification[4].value)
+				ei_printf("This is FRESH ORANGE!\n");
+			else if(result3.classification[1].value > result3.classification[0].value && result3.classification[1].value > result3.classification[2].value && result3.classification[1].value > result3.classification[3].value && result3.classification[1].value > result3.classification[4].value)
+				ei_printf("This is STALE ORANGE!\n");
+			else if(result3.classification[2].value > result3.classification[0].value && result3.classification[2].value > result3.classification[1].value && result3.classification[2].value > result3.classification[3].value && result3.classification[2].value > result3.classification[4].value)
+				ei_printf("This is FRESH APPLE!\n");
+			else if(result3.classification[3].value > result3.classification[0].value && result3.classification[3].value > result3.classification[1].value && result3.classification[3].value > result3.classification[2].value && result3.classification[3].value > result3.classification[4].value)
+				ei_printf("This is STALE APPLE!\n");
+			else
+				ei_printf("Unknown Item!\n");
+			HAL_Delay(5000);
+
+			if(result3.classification[0].value > result3.classification[1].value && result3.classification[0].value > result3.classification[2].value && result3.classification[0].value > result3.classification[3].value && result3.classification[0].value > result3.classification[4].value)
+				HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+			else if(result3.classification[1].value > result3.classification[0].value && result3.classification[1].value > result3.classification[2].value && result3.classification[1].value > result3.classification[3].value && result3.classification[1].value > result3.classification[4].value)
+				HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+			else if(result3.classification[2].value > result3.classification[0].value && result3.classification[2].value > result3.classification[1].value && result3.classification[2].value > result3.classification[3].value && result3.classification[2].value > result3.classification[4].value)
+				HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+			else if(result3.classification[3].value > result3.classification[0].value && result3.classification[3].value > result3.classification[1].value && result3.classification[3].value > result3.classification[2].value && result3.classification[3].value > result3.classification[4].value)
+				HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+			else
+				ei_printf("Unknown Item!\n");
+			HAL_Delay(5000);
+	    /* USER CODE BEGIN 3 */
+	}
 }
 
 /**
@@ -346,7 +322,7 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLN = 336;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;
   RCC_OscInitStruct.PLL.PLLQ = 4;
-  RCC_OscInitStruct.PLL.PLLR = 2;
+//  RCC_OscInitStruct.PLL.PLLR = 2;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
