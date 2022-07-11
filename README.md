@@ -65,12 +65,21 @@ The fresh and stale fruits / vegetables are obtained from [Kaggle](https://www.k
 
 ### Output From TeraTerm  
 
-Apart from displaying the output in the external LED, the results are verified by displaying the results in an external terminal called Tera Term. The setting that was changed here was to set Speed to 115200, and the port as COM5.  
+Apart from displaying the output in the external LED, the results are verified by displaying the results in an external terminal called Tera Term. When first launching TeraTerm, the connection should be chosen as a ‘Serial’ connection, and the port selected as COM5 as it corresponds to the STM32 board being connected.  
+
+![image](https://user-images.githubusercontent.com/64217618/178304397-719c7534-e70c-4514-827d-4b66adcf7838.png)  
+
+After launcing TeraTerm, For the terminal setup, the receiving method is set to LF, and the transmission method set to CR.  
+
+![image](https://user-images.githubusercontent.com/64217618/178304496-e3e1e302-f2f1-4394-a17a-f387915ee20e.png)  
+
+
+The setting that was changed here was to set Speed to 115200, and the port as COM5. 
 
 ![image](https://user-images.githubusercontent.com/64217618/178303692-f23f7017-8370-40de-a87b-e822aecf3eb3.png)
 
 
-
+When the code is built and run in STM32IDE, the response from the board will be displayed in the Tera Term as shown: 
 ![image](https://user-images.githubusercontent.com/64217618/178303570-ac806115-e515-4f6d-8964-ea43c843fc20.png)
 
 
@@ -95,6 +104,8 @@ To change the pinout configurations, before allowing the IDE to generate C/C++ c
 
 
 After saving the Pinout View, [main.h](https://github.com/yeehongchew/MKEL1123_Group02_Milestone5/blob/main/LED/Core/Inc/main.h) where the external components are defined (Line 60 to Line 77), should be updated based on your own configuration automatically. Line 101 to Line 125 on [main.c](https://github.com/yeehongchew/MKEL1123_Group02_Milestone5/blob/main/LED/Core/Src/main.c) is hard-coded accordingly depending on your pull-up/pull-down configuration as well.  
+
+This external LED configuration can be editted into the [main.cpp](https://github.com/yeehongchew/MKEL1123_Group02_Milestone5/blob/main/Edge_Impulse_Code/Core/Src/main.cpp) with the CMSIS-pack library by changing Line 130 - 140, Line 182 - 191, Line 221 - 231, Line 284 - 295. 
 
 ## Camera Configuration Pre-Work  
 
