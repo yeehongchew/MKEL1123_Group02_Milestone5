@@ -63,6 +63,18 @@ The fresh and stale fruits / vegetables are obtained from [Kaggle](https://www.k
       iii. Line 104 - 113: Copy to configure PuTTy  
       iv.  Line 164 - 317: Edit to display output of the image classification. Compulsory items to be included can be found in [documentation](https://docs.edgeimpulse.com/docs/deployment/using-cubeai) 
 
+### Output From TeraTerm  
+
+Apart from displaying the output in the external LED, the results are verified by displaying the results in an external terminal called Tera Term. The setting that was changed here was to set Speed to 115200, and the port as COM5.  
+
+![image](https://user-images.githubusercontent.com/64217618/178303692-f23f7017-8370-40de-a87b-e822aecf3eb3.png)
+
+
+
+![image](https://user-images.githubusercontent.com/64217618/178303570-ac806115-e515-4f6d-8964-ea43c843fc20.png)
+
+
+
 
 ## LED With Switch Button Pre-Work
 The Morpho Headers are chosen to be the STM32 pinout selection according to [2]. 
