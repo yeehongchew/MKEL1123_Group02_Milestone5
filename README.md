@@ -60,7 +60,7 @@ The fresh and stale fruits / vegetables are obtained from [Kaggle](https://www.k
       ii.  Line 27 - 67: Replace your raw features (From Edge Impulse --> Live Classification --> Classification result --> Copy Raw feature 
 ![image](https://user-images.githubusercontent.com/64217618/178153237-42cccdc2-8b32-4efb-981a-45b564df44fd.png)  
 
-      iii. Line 104 - 102: Copy to configure PuTTy 
+      iii. Line 104 - 120: Copy to configure PuTTy  
       iv.  Line 164 - 317: Edit to display output of the image classification. Compulsory items to be included can be found in [documentation](https://docs.edgeimpulse.com/docs/deployment/using-cubeai) 
 
 
